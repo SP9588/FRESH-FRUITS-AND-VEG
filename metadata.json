@@ -1,0 +1,13 @@
+{
+  "name": "FreshWorld Global",
+  "description": "A premium, AI-powered international marketplace for fresh vegetables and fruits, connecting farmers directly to global consumers.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "AI-powered pricing",
+    "Global seller onboarding",
+    "Real-time order tracking",
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

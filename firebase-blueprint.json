@@ -1,0 +1,155 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Base user profile for customers and sellers.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["customer", "seller", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Seller": {
+      "title": "Seller Profile",
+      "description": "Extended profile for registered sellers.",
+      "type": "object",
+      "properties": {
+        "businessName": { "type": "string" },
+        "farmName": { "type": "string" },
+        "type": { "type": "string", "enum": ["Farmer", "Retailer", "Wholesaler", "Organic Producer", "Exporter", "Distributor"] },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "country": { "type": "string" },
+        "isoCode": { "type": "string" },
+        "stdCode": { "type": "string" },
+        "postalCode": { "type": "string" },
+        "state": { "type": "string" },
+        "city": { "type": "string" },
+        "address": { "type": "string" },
+        "verified": { "type": "boolean" },
+        "commissionRate": { "type": "number" },
+        "location": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        },
+        "documents": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "Product": {
+      "title": "Marketplace Product",
+      "description": "Fruits and vegetables listed by sellers.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "discountPrice": { "type": "number" },
+        "unit": { "type": "string", "enum": ["kg", "unit", "box", "g"] },
+        "stock": { "type": "number" },
+        "sellerId": { "type": "string" },
+        "sellerName": { "type": "string" },
+        "originCountry": { "type": "string" },
+        "isOrganic": { "boolean": "boolean" },
+        "image": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewCount": { "type": "number" },
+        "status": { "type": "string", "enum": ["active", "draft", "out_of_stock"] },
+        "lowStockThreshold": { "type": "number", "description": "Alert seller when stock hits this level." },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "sellerId", "price"]
+    },
+    "Notification": {
+      "title": "System Notification",
+      "description": "Alerts for sellers and customers.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "type": { "type": "string", "enum": ["low_stock", "order_received", "system"] },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "productId": { "type": "string" },
+        "orderId": { "type": "string" },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "message", "type"]
+    },
+    "Order": {
+      "title": "Customer Order",
+      "description": "Record of a purchase transaction.",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string" },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productId": { "type": "string" },
+              "name": { "type": "string" },
+              "price": { "type": "number" },
+              "quantity": { "type": "number" },
+              "sellerId": { "type": "string" }
+            }
+          }
+        },
+        "totalAmount": { "type": "number" },
+        "commissionAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "confirmed", "shipped", "delivered", "cancelled"] },
+        "shippingAddress": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Settings": {
+      "title": "Platform Settings",
+      "description": "Global configuration for the FreshWorld platform.",
+      "type": "object",
+      "properties": {
+        "defaultCommissionRate": { "type": "number" },
+        "lastUpdatedBy": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "users": {
+      "schema": "User",
+      "description": "Public user metadata."
+    },
+    "sellers": {
+      "schema": "Seller",
+      "description": "Detailed seller profiles (admin approved)."
+    },
+    "products": {
+      "schema": "Product",
+      "description": "Global marketplace product listings."
+    },
+    "orders": {
+      "schema": "Order",
+      "description": "Order history for buyers and sellers."
+    },
+    "notifications": {
+      "schema": "Notification",
+      "description": "In-app alerts for users."
+    },
+    "settings": {
+      "schema": "Settings",
+      "description": "Global platform settings (Admin only)."
+    }
+  }
+}
