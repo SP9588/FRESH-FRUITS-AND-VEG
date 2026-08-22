@@ -35,6 +35,8 @@ import SellerApprovals from '../components/SellerApprovals';
 import AdminSettings from '../components/AdminSettings';
 import InventoryManager from '../components/InventoryManager';
 import InventoryForecaster from '../components/InventoryForecaster';
+import CropHealthDoctor from '../components/CropHealthDoctor';
+import { Stethoscope } from 'lucide-react';
 
 const data = [
   { name: 'Mon', sales: 4000, revenue: 2400 },
@@ -236,6 +238,7 @@ export default function Dashboard({ user }: { user: any }) {
   const navItems = [
     { icon: BarChart3, label: 'Overview', path: '/dashboard' },
     { icon: Package, label: 'Inventory', path: '/dashboard/inventory' },
+    { icon: Stethoscope, label: 'Crop Doctor AI', path: '/dashboard/crop-doctor' },
     { icon: ShoppingCart, label: 'Orders', path: '/dashboard/orders' },
     { icon: Users, label: 'Customers', path: '/dashboard/customers' },
     ...(isAdminUser ? [{ icon: ShieldHalf, label: 'Seller Approvals', path: '/dashboard/approvals' }] : []),
@@ -285,6 +288,7 @@ export default function Dashboard({ user }: { user: any }) {
           <Route path="/settings" element={isAdminUser ? <AdminSettings /> : <div className="font-serif italic text-3xl">Account Settings...</div>} />
           <Route path="/orders" element={<div className="font-serif italic text-3xl">Active Orders Logic...</div>} />
           <Route path="/inventory" element={<InventoryManager user={user} />} />
+          <Route path="/crop-doctor" element={<CropHealthDoctor />} />
           <Route path="/analytics" element={<InventoryForecaster />} />
           <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>

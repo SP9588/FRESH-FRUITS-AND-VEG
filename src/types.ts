@@ -85,3 +85,25 @@ export interface Order {
   shippingAddress: string;
   createdAt: string;
 }
+
+export interface Review {
+  id: string;
+  productId: string;
+  userId: string;
+  userName: string;
+  userPhoto?: string;
+  rating: number; // 1 to 5
+  comment: string;
+  verifiedPurchase: boolean;
+  freshnessRating?: number; // 1 to 5
+  packagingRating?: number; // 1 to 5
+  tasteRating?: number; // 1 to 5
+  helpfulCount?: number;
+  helpfulUsers?: string[]; // Array of user UIDs who found this helpful
+  images?: string[];
+  sellerReply?: {
+    reply: string;
+    createdAt: string;
+  };
+  createdAt: string;
+}

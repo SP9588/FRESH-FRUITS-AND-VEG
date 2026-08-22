@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, ShieldCheck, Truck, RotateCcw, Globe, ShoppingCart, Heart, Plus, Minus, Sparkles, AlertCircle, TrendingUp, Calendar } from 'lucide-react';
+import { Star, ShieldCheck, Truck, RotateCcw, Globe, ShoppingCart, Heart, Plus, Minus, Sparkles, AlertCircle, TrendingUp, Calendar, Leaf } from 'lucide-react';
 import { formatCurrency, cn } from '../lib/utils';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-hot-toast';
 import { auth } from '../firebase';
 import { productService } from '../services/productService';
 import { Product } from '../types';
+import SustainabilityCalculator from '../components/SustainabilityCalculator';
+import ProductReviewsSection from '../components/ProductReviewsSection';
 import { 
   LineChart, 
   Line, 
@@ -641,11 +643,11 @@ export default function ProductDetails() {
           <h1 className="text-5xl md:text-6xl font-serif italic text-stone-900 mb-6 leading-tight">{product.name}</h1>
           
           <div className="flex items-center gap-6 mb-8 pb-8 border-b border-stone-100">
-             <div className="flex items-center gap-1">
+             <a href="#reviews-section" className="flex items-center gap-1 hover:opacity-80 transition-opacity cursor-pointer">
                 {[1, 2, 3, 4, 5].map(i => <Star key={i} size={20} className={i <= Math.floor(localAverage) ? "text-amber-400 fill-current" : "text-stone-200 fill-current"} />)}
                 <span className="ml-2 font-bold text-stone-900">{localAverage}</span>
                 <span className="text-stone-400 font-medium ml-1">({localReviewCount} Reviews)</span>
-             </div>
+             </a>
              <div className="h-6 w-[1px] bg-stone-200"></div>
              <div className="text-brand-600 font-bold flex items-center gap-1">
                <ShieldCheck size={20} /> Verified Organic
@@ -1279,6 +1281,16 @@ export default function ProductDetails() {
              <p className="mt-3 text-[10px] text-stone-400 italic font-medium px-2">Global cold-chain logistics ensures freshness on your selected arrival date.</p>
           </div>
 
+          {/* Sustainability & Carbon Footprint Section */}
+          <div className="mb-12">
+            <SustainabilityCalculator 
+              productName={product.name}
+              originCountry={product.originCountry}
+              isOrganic={!!product.isOrganic}
+              quantityKg={quantity}
+            />
+          </div>
+
           {/* Shipping Route Optimization Section */}
           <div className="mb-12 bg-stone-900 rounded-[2.5rem] p-8 text-white overflow-hidden relative group">
             <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform pointer-events-none">
@@ -1568,6 +1580,21 @@ export default function ProductDetails() {
           </div>
         </div>
       </div>
+
+      {/* Product Reviews and Rating System */}
+      <ProductReviewsSection 
+        product={product} 
+        currentUser={auth.currentUser ? {
+          uid: auth.currentUser.uid,
+          displayName: auth.currentUser.displayName || 'Customer',
+          photoURL: auth.currentUser.photoURL || undefined
+        } : null}
+        onRatingUpdated={(newRating, newCount) => {
+          setLocalAverage(newRating);
+          setLocalReviewCount(newCount);
+          setProduct(prev => prev ? { ...prev, rating: newRating, reviewCount: newCount } : prev);
+        }}
+      />
     </div>
   );
 }

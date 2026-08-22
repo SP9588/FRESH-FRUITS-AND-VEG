@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Search, Menu, X, Globe, Leaf } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, X, Globe, Leaf, Utensils } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserProfile } from '../types';
 import { auth, googleProvider } from '../firebase';
 import { signInWithPopup, signOut } from 'firebase/auth';
 import { cn } from '../lib/utils';
 import { useCart } from '../context/CartContext';
+import { useLanguage } from '../context/LanguageContext';
 import NotificationCenter from './NotificationCenter';
+import LanguageSelector from './LanguageSelector';
 
 export default function Navbar({ user }: { user: UserProfile | null }) {
   const { totalItems } = useCart();
+  const { t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const navigate = useNavigate();
@@ -43,14 +46,24 @@ export default function Navbar({ user }: { user: UserProfile | null }) {
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link to="/market" className="text-sm font-medium text-stone-600 hover:text-brand-600 transition-colors">Marketplace</Link>
-            <Link to="/market?cat=fruits" className="text-sm font-medium text-stone-600 hover:text-brand-600 transition-colors">Fruits</Link>
-            <Link to="/market?cat=vegetables" className="text-sm font-medium text-stone-600 hover:text-brand-600 transition-colors">Vegetables</Link>
+          <div className="hidden md:flex items-center gap-6">
+            <Link to="/market" className="text-sm font-medium text-stone-600 hover:text-brand-600 transition-colors">
+              {t('nav.marketplace', 'Marketplace')}
+            </Link>
+            <Link to="/recipes" className="text-sm font-semibold text-stone-800 hover:text-brand-600 transition-colors flex items-center gap-1.5 bg-stone-100 hover:bg-stone-200/80 px-3 py-1.5 rounded-full">
+              <Utensils size={14} className="text-brand-600" />
+              {t('nav.recipes', 'Seasonal Recipes')}
+            </Link>
+            <Link to="/dashboard/crop-doctor" className="text-sm font-semibold text-brand-700 bg-brand-50 px-3 py-1.5 rounded-full hover:bg-brand-100 transition-colors flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
+              {t('nav.cropDoctor', 'Crop Doctor AI')}
+            </Link>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <LanguageSelector variant="navbar" />
+
             <button 
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               className="p-2 text-stone-600 hover:bg-stone-100 rounded-full transition-colors"
@@ -77,6 +90,7 @@ export default function Navbar({ user }: { user: UserProfile | null }) {
                 </button>
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-stone-100 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all py-2">
                   <Link to="/dashboard" className="block px-4 py-2 text-sm text-stone-600 hover:bg-stone-50">Dashboard</Link>
+                  <Link to="/dashboard/crop-doctor" className="block px-4 py-2 text-sm text-stone-600 hover:bg-stone-50 font-bold text-brand-700">Crop Doctor AI</Link>
                   <Link to="/dashboard/orders" className="block px-4 py-2 text-sm text-stone-600 hover:bg-stone-50">Orders</Link>
                   <hr className="my-2 border-stone-100" />
                   <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Logout</button>

@@ -65,15 +65,30 @@ service cloud.firestore {
     match /products/{productId} {
       allow read: if true; // Public marketplace
       allow create: if isVerified() && isValidProduct(incoming()) && isValidId(productId);
-      allow update: if isVerified() && (
-                      (existing().sellerId == request.auth.uid || isAdmin()) && 
-                      incoming().diff(existing()).affectedKeys().hasAny(['name', 'price', 'discountPrice', 'stock', 'status', 'description', 'lowStockThreshold', 'updatedAt'])
+      allow update: if (
+                      isVerified() && (existing().sellerId == request.auth.uid || isAdmin()) && 
+                      incoming().diff(existing()).affectedKeys().hasAny(['name', 'price', 'discountPrice', 'stock', 'status', 'description', 'lowStockThreshold', 'rating', 'reviewCount', 'updatedAt'])
                     ) || (
                       // Allow customers to decrement stock during purchase
-                      incoming().diff(existing()).affectedKeys().hasOnly(['stock']) && 
+                      isVerified() && incoming().diff(existing()).affectedKeys().hasOnly(['stock']) && 
                       incoming().stock < existing().stock
+                    ) || (
+                      // Allow logged in customers to update rating & reviewCount when reviewing
+                      isSignedIn() && incoming().diff(existing()).affectedKeys().hasAny(['rating', 'reviewCount'])
                     );
       allow delete: if isVerified() && (existing().sellerId == request.auth.uid || isAdmin());
+    }
+
+    // 3b. Reviews Collection
+    match /reviews/{reviewId} {
+      allow read: if true; // Anyone can read reviews
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid && isValidId(reviewId);
+      allow update: if isSignedIn() && (
+                      (existing().userId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasAny(['rating', 'comment', 'freshnessRating', 'packagingRating', 'tasteRating', 'images', 'updatedAt'])) ||
+                      (incoming().diff(existing()).affectedKeys().hasAny(['helpfulCount', 'helpfulUsers'])) ||
+                      (incoming().diff(existing()).affectedKeys().hasOnly(['sellerReply']))
+                    );
+      allow delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
     }
 
     // 4. Orders Collection
@@ -95,7 +110,14 @@ service cloud.firestore {
       allow delete: if isVerified() && resource.data.userId == request.auth.uid;
     }
 
-    // 6. Settings Collection
+    // 6. Crop Diagnostics Collection
+    match /cropDiagnostics/{diagnosticId} {
+      allow read: if isSignedIn() && (resource.data.sellerId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && incoming().sellerId == request.auth.uid;
+      allow delete: if isSignedIn() && (resource.data.sellerId == request.auth.uid || isAdmin());
+    }
+
+    // 7. Settings Collection
     match /settings/{settingId} {
       allow read: if isSignedIn();
       allow write: if isAdmin();

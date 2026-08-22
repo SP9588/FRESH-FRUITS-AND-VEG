@@ -180,6 +180,50 @@ export default function Home() {
         </div>
       </section>
 
+      {/* AI Seasonal Recipes Banner */}
+      <section className="bg-stone-900 py-20 px-6 text-white relative overflow-hidden">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <span className="px-3.5 py-1.5 bg-brand-500/20 text-brand-400 border border-brand-500/30 text-xs font-black uppercase tracking-widest rounded-full inline-block">
+              AI-Powered Kitchen Studio
+            </span>
+            <h2 className="text-4xl md:text-5xl font-serif italic leading-tight">
+              Turn Fresh Marketplace Harvest into Gourmet Seasonal Dishes
+            </h2>
+            <p className="text-stone-300 text-base leading-relaxed">
+              Not sure what to cook with today's freshly landed Sicilian tomatoes or Kashmiri apples? Our AI Master Chef generates bespoke recipes tailored specifically to the produce currently in stock.
+            </p>
+            <div className="pt-2">
+              <Link to="/recipes" className="inline-flex items-center gap-3 bg-brand-600 hover:bg-brand-500 text-white font-black px-8 py-4 rounded-2xl text-sm uppercase tracking-widest shadow-xl shadow-brand-600/30 transition-all hover:scale-105">
+                Explore Seasonal AI Recipes <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 relative">
+            <div className="space-y-4">
+              <div className="rounded-3xl overflow-hidden shadow-2xl border border-white/10 aspect-square">
+                <img src="https://images.unsplash.com/photo-1592417817098-8f3d6eb16082?w=600&auto=format&fit=crop&q=80" alt="Gazpacho" className="w-full h-full object-cover" />
+              </div>
+              <div className="p-4 bg-stone-800 rounded-2xl border border-stone-700 text-xs">
+                <div className="font-bold text-white mb-1">Sicilian Tomato Gazpacho</div>
+                <div className="text-stone-400">Matched to Ruby Red Tomatoes</div>
+              </div>
+            </div>
+
+            <div className="space-y-4 pt-8">
+              <div className="p-4 bg-stone-800 rounded-2xl border border-stone-700 text-xs">
+                <div className="font-bold text-white mb-1">Kashmiri Apple & Avocado Salad</div>
+                <div className="text-stone-400">Matched to Fresh Hass Avocados</div>
+              </div>
+              <div className="rounded-3xl overflow-hidden shadow-2xl border border-white/10 aspect-square">
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop&q=80" alt="Superfood Salad" className="w-full h-full object-cover" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Call to Action */}
       <section className="py-24 bg-brand-600 relative overflow-hidden">
         <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[600px] h-[600px] bg-brand-500 rounded-full blur-[100px] opacity-50"></div>
