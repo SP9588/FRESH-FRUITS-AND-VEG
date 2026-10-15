@@ -75,15 +75,17 @@
     },
     "Notification": {
       "title": "System Notification",
-      "description": "Alerts for sellers and customers.",
+      "description": "Alerts for sellers, developers, and customers.",
       "type": "object",
       "properties": {
         "userId": { "type": "string" },
-        "type": { "type": "string", "enum": ["low_stock", "order_received", "system"] },
+        "type": { "type": "string", "enum": ["low_stock", "order_received", "system", "platform_commission", "payment_success", "developer_notice", "payout_ready", "crop_doctor_update"] },
         "title": { "type": "string" },
         "message": { "type": "string" },
         "productId": { "type": "string" },
         "orderId": { "type": "string" },
+        "amount": { "type": "number" },
+        "upiId": { "type": "string" },
         "read": { "type": "boolean" },
         "createdAt": { "type": "string", "format": "date-time" }
       },

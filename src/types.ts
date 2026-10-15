@@ -80,8 +80,19 @@ export interface Order {
   customerId: string;
   items: OrderItem[];
   totalAmount: number;
+  subtotalAmount?: number;
+  shippingAmount?: number;
   commissionAmount: number;
+  commissionRate?: number;
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  paymentMethod?: 'UPI_DIRECT' | 'CARD_ESCROW' | 'NET_BANKING';
+  paymentStatus?: 'paid' | 'pending' | 'failed' | 'verifying';
+  payeeUpiId?: string;
+  payeeName?: string;
+  payeeEmail?: string;
+  utrNumber?: string;
+  transactionRef?: string;
+  paidAt?: string;
   shippingAddress: string;
   createdAt: string;
 }
@@ -107,3 +118,48 @@ export interface Review {
   };
   createdAt: string;
 }
+
+export type NotificationType = 
+  | 'low_stock' 
+  | 'order_received' 
+  | 'system' 
+  | 'platform_commission' 
+  | 'payment_success' 
+  | 'developer_notice' 
+  | 'payout_ready' 
+  | 'crop_doctor_update';
+
+export interface AppNotification {
+  id: string;
+  userId: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  productId?: string;
+  orderId?: string;
+  amount?: number;
+  upiId?: string;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface PlatformPayeeConfig {
+  platformName: string;
+  developerName: string;
+  developerEmail: string;
+  upiId: string;
+  merchantName: string;
+  commissionRate: number; // percentage, e.g., 10%
+  upiQrUrl: string;
+  supportPhone?: string;
+}
+
+export const FRESH_WORLD_PAYEE: PlatformPayeeConfig = {
+  platformName: 'Fresh World',
+  developerName: 'Santosh Prasad',
+  developerEmail: 'samtoshprasad8891@gmail.com',
+  upiId: '9279120271ybl',
+  merchantName: 'Fresh World Developer',
+  commissionRate: 10,
+  upiQrUrl: 'upi://pay?pa=9279120271ybl&pn=Fresh%20World%20Developer&cu=INR',
+};

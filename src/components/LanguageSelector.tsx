@@ -10,7 +10,7 @@ interface LanguageSelectorProps {
 }
 
 export default function LanguageSelector({ variant = 'navbar', className }: LanguageSelectorProps) {
-  const { currentLanguage, setLanguageByCode, t } = useLanguage();
+  const { currentLanguage, setLanguageByCode, t, isPageMinimized, setIsPageMinimized } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeRegionFilter, setActiveRegionFilter] = useState<string>('All');
@@ -19,7 +19,8 @@ export default function LanguageSelector({ variant = 'navbar', className }: Lang
     const matchesQuery = 
       lang.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       lang.nativeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      lang.code.toLowerCase().includes(searchQuery.toLowerCase());
+      lang.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      lang.country.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesRegion = activeRegionFilter === 'All' || lang.region === activeRegionFilter;
 
@@ -33,23 +34,43 @@ export default function LanguageSelector({ variant = 'navbar', className }: Lang
     setIsOpen(false);
   };
 
+  const handleMinimizeAndShowAll = () => {
+    setIsOpen(false);
+    setIsPageMinimized(true);
+  };
+
   if (variant === 'floating') {
+    if (isPageMinimized) return null; // Hide floating trigger when already in minimized view
+
     return (
       <>
-        <button
-          onClick={() => setIsOpen(true)}
-          className={cn(
-            "fixed bottom-6 right-6 z-40 bg-stone-900/90 text-white backdrop-blur-md px-4 py-3 rounded-full shadow-2xl border border-stone-700/80 hover:bg-stone-800 transition-all flex items-center gap-2 group hover:scale-105",
-            className
-          )}
-        >
-          <span className="text-lg">{currentLanguage.flag}</span>
-          <span className="text-xs font-bold font-serif italic">{currentLanguage.nativeName}</span>
-          <span className="text-[10px] font-black uppercase text-brand-400 bg-brand-950/80 px-2 py-0.5 rounded-full border border-brand-800">
-            {currentLanguage.currency.code}
-          </span>
-          <Globe size={14} className="text-stone-400 group-hover:rotate-45 transition-transform" />
-        </button>
+        <div className="fixed bottom-6 right-6 z-40 flex items-center gap-2">
+          <button
+            onClick={handleMinimizeAndShowAll}
+            className="bg-brand-600 hover:bg-brand-500 text-white px-3.5 py-3 rounded-full shadow-2xl border border-brand-400/40 text-xs font-black flex items-center gap-1.5 transition-all hover:scale-105"
+            title="Minimize webpage to clearly view all available languages"
+          >
+            <Sparkles size={14} className="text-amber-300" />
+            <span className="hidden sm:inline">Minimize & View All Languages</span>
+            <span className="sm:hidden">All Languages</span>
+          </button>
+
+          <button
+            onClick={() => setIsOpen(true)}
+            className={cn(
+              "bg-stone-900/90 text-white backdrop-blur-md px-4 py-3 rounded-full shadow-2xl border border-stone-700/80 hover:bg-stone-800 transition-all flex items-center gap-2 group hover:scale-105",
+              className
+            )}
+            title="Open quick language selector"
+          >
+            <span className="text-lg">{currentLanguage.flag}</span>
+            <span className="text-xs font-bold font-serif italic">{currentLanguage.nativeName}</span>
+            <span className="text-[10px] font-black uppercase text-brand-400 bg-brand-950/80 px-2 py-0.5 rounded-full border border-brand-800">
+              {currentLanguage.currency.code}
+            </span>
+            <Globe size={14} className="text-stone-400 group-hover:rotate-45 transition-transform" />
+          </button>
+        </div>
 
         {/* Modal */}
         <AnimatePresence>
@@ -72,7 +93,7 @@ export default function LanguageSelector({ variant = 'navbar', className }: Lang
                         Global Marketplace Localization
                       </h3>
                       <p className="text-xs text-stone-400">
-                        Select from 26+ major world languages & automatic currency pairing
+                        Select from 32+ major world languages & automatic currency pairing
                       </p>
                     </div>
                   </div>
@@ -82,6 +103,26 @@ export default function LanguageSelector({ variant = 'navbar', className }: Lang
                     className="p-2.5 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-white transition-colors"
                   >
                     <X size={18} />
+                  </button>
+                </div>
+
+                {/* Prominent Minimize Webpage Banner */}
+                <div className="mx-6 mt-4 p-4 rounded-2xl bg-gradient-to-r from-brand-900/60 via-stone-800 to-emerald-950/60 border border-brand-500/40 flex items-center justify-between gap-3 shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-brand-500/20 text-brand-300 flex items-center justify-center font-bold">
+                      <Sparkles size={18} />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-white">Full Screen Panoramic Overview</h4>
+                      <p className="text-[11px] text-stone-300">Minimize the webpage to see all 32+ languages laid out clearly side-by-side</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleMinimizeAndShowAll}
+                    className="px-3.5 py-2 bg-brand-500 hover:bg-brand-400 text-stone-950 rounded-xl text-xs font-black whitespace-nowrap shadow-md transition-all flex items-center gap-1.5"
+                  >
+                    <span>Minimize Webpage</span>
+                    <ArrowRight size={13} />
                   </button>
                 </div>
 
@@ -215,7 +256,7 @@ export default function LanguageSelector({ variant = 'navbar', className }: Lang
                       Select Marketplace Language
                     </h3>
                     <p className="text-xs text-stone-400">
-                      Supports 26+ languages with localized currency rates and RTL support
+                      Supports 32+ languages with localized currency rates and RTL support
                     </p>
                   </div>
                 </div>
@@ -225,6 +266,26 @@ export default function LanguageSelector({ variant = 'navbar', className }: Lang
                   className="p-2.5 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-400 hover:text-white transition-colors"
                 >
                   <X size={18} />
+                </button>
+              </div>
+
+              {/* Prominent Minimize Webpage Banner */}
+              <div className="mx-6 mt-4 p-4 rounded-2xl bg-gradient-to-r from-brand-900/60 via-stone-800 to-emerald-950/60 border border-brand-500/40 flex items-center justify-between gap-3 shadow-lg">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-brand-500/20 text-brand-300 flex items-center justify-center font-bold">
+                    <Sparkles size={18} />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-white">Full Screen Panoramic Overview</h4>
+                    <p className="text-[11px] text-stone-300">Minimize the webpage to see all 32+ languages laid out clearly side-by-side</p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleMinimizeAndShowAll}
+                  className="px-3.5 py-2 bg-brand-500 hover:bg-brand-400 text-stone-950 rounded-xl text-xs font-black whitespace-nowrap shadow-md transition-all flex items-center gap-1.5"
+                >
+                  <span>Minimize Webpage</span>
+                  <ArrowRight size={13} />
                 </button>
               </div>
 

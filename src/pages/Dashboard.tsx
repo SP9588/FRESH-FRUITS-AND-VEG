@@ -36,6 +36,7 @@ import AdminSettings from '../components/AdminSettings';
 import InventoryManager from '../components/InventoryManager';
 import InventoryForecaster from '../components/InventoryForecaster';
 import CropHealthDoctor from '../components/CropHealthDoctor';
+import OrdersManager from '../components/OrdersManager';
 import { Stethoscope } from 'lucide-react';
 
 const data = [
@@ -286,7 +287,7 @@ export default function Dashboard({ user }: { user: any }) {
           <Route path="/" element={<MainOverview />} />
           <Route path="/approvals" element={<SellerApprovals />} />
           <Route path="/settings" element={isAdminUser ? <AdminSettings /> : <div className="font-serif italic text-3xl">Account Settings...</div>} />
-          <Route path="/orders" element={<div className="font-serif italic text-3xl">Active Orders Logic...</div>} />
+          <Route path="/orders" element={<OrdersManager user={user} />} />
           <Route path="/inventory" element={<InventoryManager user={user} />} />
           <Route path="/crop-doctor" element={<CropHealthDoctor />} />
           <Route path="/analytics" element={<InventoryForecaster />} />

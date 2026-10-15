@@ -1,9 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Globe, ShieldCheck, Zap, Star, Leaf } from 'lucide-react';
+import { ArrowRight, Globe, ShieldCheck, Zap, Star, Leaf, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Home() {
+  const { setIsPageMinimized, currentLanguage } = useLanguage();
+
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
@@ -23,11 +26,19 @@ export default function Home() {
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-2xl"
+            className="max-w-3xl"
           >
-            <div className="inline-flex items-center gap-2 bg-brand-600/20 border border-brand-500/30 text-brand-400 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6 backdrop-blur-md">
-              <Globe size={14} /> International Freshness Guaranteed
-            </div>
+            <button
+              onClick={() => setIsPageMinimized(true)}
+              className="inline-flex items-center gap-2 bg-brand-600/30 hover:bg-brand-600/50 border border-brand-400/50 text-white px-4 py-2 rounded-full text-xs font-bold tracking-wider uppercase mb-6 backdrop-blur-md transition-all hover:scale-105 cursor-pointer shadow-lg"
+              title="Click to minimize webpage and view all available languages clearly"
+            >
+              <Globe size={14} className="text-amber-300" />
+              <span>32+ World Languages Available</span>
+              <span className="text-[10px] bg-brand-500/40 text-brand-200 px-2 py-0.5 rounded-full border border-brand-400/30">
+                Click to Minimize & View
+              </span>
+            </button>
             <h1 className="text-6xl md:text-8xl font-serif text-white italic leading-[1.1] mb-8">
               The World's <br />
               <span className="not-italic font-sans font-black tracking-tighter text-brand-400">Fresh Market</span>
@@ -35,11 +46,18 @@ export default function Home() {
             <p className="text-xl text-stone-300 mb-10 max-w-lg leading-relaxed">
               Skip the middleman. Buy directly from premium farmers across 150+ countries. Fresh harvest to your doorstep.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/market" className="bg-brand-600 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-brand-500 transition-all flex items-center justify-center gap-2 shadow-xl shadow-brand-600/30 group">
+            <div className="flex flex-wrap gap-4">
+              <Link to="/market" className="bg-brand-600 text-white px-8 py-4.5 rounded-2xl font-bold text-base hover:bg-brand-500 transition-all flex items-center justify-center gap-2 shadow-xl shadow-brand-600/30 group">
                 Shop Marketplace <ArrowRight className="group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link to="/register-seller" className="bg-white/10 backdrop-blur-xl border border-white/20 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all flex items-center justify-center">
+              <button 
+                onClick={() => setIsPageMinimized(true)}
+                className="bg-stone-900/80 hover:bg-stone-900 text-white border border-stone-700/80 px-6 py-4.5 rounded-2xl font-bold text-base transition-all flex items-center justify-center gap-2 shadow-xl hover:scale-105"
+              >
+                <Globe size={18} className="text-brand-400" />
+                <span>All Languages (Minimize View)</span>
+              </button>
+              <Link to="/register-seller" className="bg-white/10 backdrop-blur-xl border border-white/20 text-white px-6 py-4.5 rounded-2xl font-bold text-base hover:bg-white/20 transition-all flex items-center justify-center">
                 Become a Seller
               </Link>
             </div>
