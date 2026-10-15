@@ -76,6 +76,11 @@ export default function Footer() {
             <h3 className="text-white text-xs font-black uppercase tracking-widest mb-4">Marketplace</h3>
             <ul className="space-y-2.5 text-xs">
               <li>
+                <Link to="/pricing" className="hover:text-brand-400 flex items-center gap-1.5 font-bold text-amber-400">
+                  <Sparkles size={13} /> Subscriptions & SaaS Plans
+                </Link>
+              </li>
+              <li>
                 <Link to="/market" className="hover:text-brand-400 transition-colors">
                   All Fresh Produce
                 </Link>

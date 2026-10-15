@@ -37,7 +37,10 @@ import InventoryManager from '../components/InventoryManager';
 import InventoryForecaster from '../components/InventoryForecaster';
 import CropHealthDoctor from '../components/CropHealthDoctor';
 import OrdersManager from '../components/OrdersManager';
-import { Stethoscope } from 'lucide-react';
+import CustomerSubscriptionManager from '../components/CustomerSubscriptionManager';
+import AdminSubscriptionSuite from '../components/AdminSubscriptionSuite';
+import UniversalSaaSSocialHub from '../components/UniversalSaaSSocialHub';
+import { Stethoscope, CreditCard, Share2, ShieldCheck } from 'lucide-react';
 
 const data = [
   { name: 'Mon', sales: 4000, revenue: 2400 },
@@ -238,6 +241,9 @@ export default function Dashboard({ user }: { user: any }) {
 
   const navItems = [
     { icon: BarChart3, label: 'Overview', path: '/dashboard' },
+    { icon: CreditCard, label: 'My Subscriptions', path: '/dashboard/subscriptions' },
+    ...(isAdminUser ? [{ icon: ShieldCheck, label: 'Admin SaaS Suite', path: '/dashboard/admin-subscriptions' }] : []),
+    { icon: Share2, label: 'Global Social Hub', path: '/dashboard/share-hub' },
     { icon: Package, label: 'Inventory', path: '/dashboard/inventory' },
     { icon: Stethoscope, label: 'Crop Doctor AI', path: '/dashboard/crop-doctor' },
     { icon: ShoppingCart, label: 'Orders', path: '/dashboard/orders' },
@@ -285,6 +291,9 @@ export default function Dashboard({ user }: { user: any }) {
       <main className="flex-grow p-8 md:p-12">
         <Routes>
           <Route path="/" element={<MainOverview />} />
+          <Route path="/subscriptions" element={<CustomerSubscriptionManager user={user} onNavigateToPlans={() => window.location.href = '/pricing'} />} />
+          <Route path="/admin-subscriptions" element={isAdminUser ? <AdminSubscriptionSuite user={user} /> : <CustomerSubscriptionManager user={user} />} />
+          <Route path="/share-hub" element={<div className="max-w-6xl"><UniversalSaaSSocialHub /></div>} />
           <Route path="/approvals" element={<SellerApprovals />} />
           <Route path="/settings" element={isAdminUser ? <AdminSettings /> : <div className="font-serif italic text-3xl">Account Settings...</div>} />
           <Route path="/orders" element={<OrdersManager user={user} />} />

@@ -18,6 +18,7 @@ import Dashboard from './pages/Dashboard';
 import Auth from './pages/Auth';
 import Cart from './pages/Cart';
 import SeasonalRecipes from './pages/SeasonalRecipes';
+import SubscriptionPricing from './pages/SubscriptionPricing';
 
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
@@ -80,6 +81,8 @@ export default function App() {
                     <Route path="/auth" element={!user ? <Auth /> : <Navigate to="/" />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/recipes" element={<SeasonalRecipes />} />
+                    <Route path="/pricing" element={<SubscriptionPricing user={user} />} />
+                    <Route path="/subscriptions" element={<Navigate to="/dashboard/subscriptions" />} />
                   </Routes>
                 </main>
                 <Footer />

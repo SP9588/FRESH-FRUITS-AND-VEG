@@ -38,7 +38,7 @@ export default function PayeeCommissionModal({
 }: PayeeCommissionModalProps) {
   const [copiedUpi, setCopiedUpi] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
-  const [calcAmount, setCalcAmount] = useState<number>(customAmount || 1500);
+  const [calcAmount, setCalcAmount] = useState<number>(customAmount !== undefined ? customAmount : 0);
   const [utrNumber, setUtrNumber] = useState('');
   const [isSubmittingUtr, setIsSubmittingUtr] = useState(false);
   const [submittedReceipt, setSubmittedReceipt] = useState<any | null>(null);

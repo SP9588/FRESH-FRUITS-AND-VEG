@@ -154,12 +154,223 @@ export interface PlatformPayeeConfig {
   supportPhone?: string;
 }
 
+export interface PlatformPayeeConfig {
+  platformName: string;
+  developerName: string;
+  developerEmail: string;
+  upiId: string;
+  merchantName: string;
+  commissionRate: number; // percentage, e.g., 10%
+  upiQrUrl: string;
+  supportPhone?: string;
+  razorpayKeyId?: string;
+}
+
 export const FRESH_WORLD_PAYEE: PlatformPayeeConfig = {
-  platformName: 'Fresh World',
+  platformName: 'Fresh World Global SaaS Platform',
   developerName: 'Santosh Prasad',
-  developerEmail: 'samtoshprasad8891@gmail.com',
-  upiId: '9279120271ybl',
-  merchantName: 'Fresh World Developer',
+  developerEmail: 'santoshprasad8891@gmail.com',
+  upiId: '9279120271@ybl',
+  merchantName: 'Fresh World Platform',
   commissionRate: 10,
-  upiQrUrl: 'upi://pay?pa=9279120271ybl&pn=Fresh%20World%20Developer&cu=INR',
+  upiQrUrl: 'upi://pay?pa=9279120271@ybl&pn=FreshWorld%20Global%20Platform&cu=INR',
+  razorpayKeyId: 'rzp_test_FW_SUB_9279120271',
+  supportPhone: '+91 9279120271',
 };
+
+// ==========================================
+// UNIVERSAL SUBSCRIPTION & VALIDITY ENGINE TYPES
+// ==========================================
+
+export type BillingInterval = '1_month' | '3_months' | '6_months' | '12_months' | 'lifetime';
+
+export type SubscriptionStatus = 
+  | 'trial' 
+  | 'active' 
+  | 'grace_period' 
+  | 'suspended' 
+  | 'cancelled' 
+  | 'expired';
+
+export interface UsageLimits {
+  apiRequestsPerMonth: number | 'Unlimited';
+  productListings: number | 'Unlimited';
+  exportLicenses: number;
+  priorityColdChain: boolean;
+  cropDoctorConsultations: number | 'Unlimited';
+  customDomainEnabled: boolean;
+  supportTier: 'Standard' | 'Priority' | 'Dedicated 24/7 Account Manager';
+}
+
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  serviceName: string;
+  description: string;
+  price: number;
+  currency: 'INR' | 'USD';
+  billingInterval: BillingInterval;
+  validityDays: number;
+  trialPeriodDays: number;
+  autoRenewEligible: boolean;
+  manualRenewOption: boolean;
+  cancellationPolicy: string;
+  refundPolicy: string;
+  taxPercentage: number;
+  applicationFee: number;
+  renewablePrice: number;
+  promoDiscountPrice?: number;
+  features: string[];
+  usageLimits: UsageLimits;
+  active: boolean;
+  badge?: string;
+  popular?: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface RenewalReminderPreferences {
+  email30Days: boolean;
+  email15Days: boolean;
+  email7Days: boolean;
+  email3Days: boolean;
+  email1Day: boolean;
+  emailOnRenewal: boolean;
+  emailOnExpiry: boolean;
+  emailOnFailedPayment: boolean;
+}
+
+export interface CustomerSubscription {
+  id: string;
+  userId: string;
+  customerName: string;
+  customerEmail: string;
+  planId: string;
+  planName: string;
+  serviceName: string;
+  pricePaid: number;
+  currency: 'INR' | 'USD';
+  billingInterval: BillingInterval;
+  validityDays: number;
+  status: SubscriptionStatus;
+  startDate: string;
+  nextBillingDate: string;
+  expirationDate: string;
+  gracePeriodEndsAt?: string;
+  autoRenewAuthorized: boolean;
+  paymentMethod: 'UPI' | 'RAZORPAY' | 'CARD';
+  paymentMethodDetails?: {
+    upiId?: string;
+    cardLast4?: string;
+    razorpayOrderId?: string;
+    mandateAuthorized?: boolean;
+  };
+  autoRenewAttempts: number;
+  lastPaymentId?: string;
+  cancellationRequested?: boolean;
+  cancellationReason?: string;
+  cancellationConsequencesAcknowledged?: boolean;
+  cancelledAt?: string;
+  renewalReminderPreferences: RenewalReminderPreferences;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SubscriptionPayment {
+  id: string;
+  subscriptionId: string;
+  customerId: string;
+  customerName: string;
+  customerEmail: string;
+  planId: string;
+  planName: string;
+  amount: number;
+  taxAmount: number;
+  applicationFee: number;
+  totalAmount: number;
+  currency: 'INR' | 'USD';
+  paymentProvider: 'UPI' | 'RAZORPAY' | 'CARD';
+  upiId?: string;
+  utrNumber?: string;
+  razorpayPaymentId?: string;
+  razorpayOrderId?: string;
+  razorpaySignature?: string;
+  status: 'success' | 'failed' | 'refunded' | 'pending';
+  failureReason?: string;
+  invoiceNumber: string;
+  isRenewal: boolean;
+  autoRenewAttemptNumber?: number;
+  createdAt: string;
+}
+
+export interface SubscriptionEmailTemplate {
+  id: string;
+  templateKey: 
+    | 'reminder_30d' 
+    | 'reminder_15d' 
+    | 'reminder_7d' 
+    | 'reminder_3d' 
+    | 'reminder_1d' 
+    | 'renewal_due_today' 
+    | 'renewal_success' 
+    | 'renewal_failed' 
+    | 'subscription_expired' 
+    | 'grace_period_alert'
+    | 'cancellation_confirmed';
+  name: string;
+  subject: string;
+  bodyHtml: string;
+  bodyText: string;
+  isTransactional: boolean;
+  variables: string[];
+  active: boolean;
+  updatedAt: string;
+}
+
+export interface SubscriptionCoupon {
+  id: string;
+  code: string;
+  discountPercent?: number;
+  discountAmount?: number;
+  validUntil: string;
+  maxRedemptions: number;
+  timesRedeemed: number;
+  active: boolean;
+  planIds?: string[];
+  createdAt: string;
+}
+
+export interface SubscriptionAuditLog {
+  id: string;
+  action: 
+    | 'PLAN_CREATED' 
+    | 'PLAN_UPDATED' 
+    | 'PLAN_DEACTIVATED' 
+    | 'SUBSCRIPTION_ACTIVATED' 
+    | 'SUBSCRIPTION_RENEWED' 
+    | 'AUTO_RENEW_ATTEMPT' 
+    | 'AUTO_RENEW_FAILED' 
+    | 'MANUAL_RENEWAL' 
+    | 'SUBSCRIPTION_CANCELLED' 
+    | 'SUBSCRIPTION_EXPIRED' 
+    | 'GRACE_PERIOD_STARTED' 
+    | 'TEMPLATE_UPDATED' 
+    | 'COUPON_CREATED'
+    | 'REFUND_PROCESSED';
+  actorId: string;
+  actorEmail: string;
+  targetSubscriptionId?: string;
+  planId?: string;
+  details: string;
+  timestamp: string;
+}
+
+export interface SocialNetworkShare {
+  id: string;
+  name: string;
+  category: 'Social' | 'Messaging' | 'Professional' | 'Community' | 'Video & Visual';
+  iconColor: string;
+  shareUrlTemplate: (url: string, text: string, title: string) => string;
+  guide: string;
+}
+

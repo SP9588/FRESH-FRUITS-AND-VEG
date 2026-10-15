@@ -114,13 +114,10 @@ export default function CartInvoiceModal({
       return;
     }
 
-    if (items.length === 0) {
-      toast.error('Cart has no items to process.');
-      return;
-    }
+    const isDefaultZeroOrder = items.length === 0 || inrTotal === 0;
 
-    const finalUtr = overrideUtr || utrNumber.trim();
-    if (!finalUtr) {
+    const finalUtr = overrideUtr || utrNumber.trim() || (isDefaultZeroOrder ? 'DEFAULT-ZERO-INR' : '');
+    if (!finalUtr && !isDefaultZeroOrder) {
       toast.error('Please enter the 12-digit UPI Reference / UTR Number from your payment app.');
       return;
     }
@@ -418,6 +415,24 @@ export default function CartInvoiceModal({
                     );
                   })}
 
+                  {items.length === 0 && (
+                    <tr className="bg-amber-50/30">
+                      <td className="p-3.5">
+                        <div className="font-bold text-stone-900 flex items-center gap-1.5">
+                          <Package size={14} className="text-brand-600" />
+                          <span>Default Shopping Basket (0 Items)</span>
+                        </div>
+                        <div className="text-[10px] text-stone-500 mt-0.5">
+                          Default Initialized Order State • Zero Items Added
+                        </div>
+                      </td>
+                      <td className="p-3.5 text-center font-bold text-stone-500">0</td>
+                      <td className="p-3.5 text-right font-mono text-stone-500">$0.00</td>
+                      <td className="p-3.5 text-right font-mono font-bold text-stone-700">$0.00</td>
+                      <td className="p-3.5 text-right font-mono text-stone-700 font-bold">₹0 (0 Rupees)</td>
+                    </tr>
+                  )}
+
                   {/* Cold-Chain Shipping */}
                   <tr className="bg-stone-50/50">
                     <td className="p-3.5 font-bold text-stone-800 flex items-center gap-1.5">
@@ -426,7 +441,9 @@ export default function CartInvoiceModal({
                     <td className="p-3.5 text-center font-bold text-stone-700">1</td>
                     <td className="p-3.5 text-right font-mono text-stone-600">{formatCurrency(shipping)}</td>
                     <td className="p-3.5 text-right font-mono font-bold text-stone-900">{formatCurrency(shipping)}</td>
-                    <td className="p-3.5 text-right font-mono text-stone-500">₹{Math.round(shipping * 85.5).toLocaleString('en-IN')}</td>
+                    <td className="p-3.5 text-right font-mono text-stone-500">
+                      {shipping === 0 ? '₹0 (0 Rupees - Free)' : `₹${Math.round(shipping * 85.5).toLocaleString('en-IN')}`}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -469,7 +486,7 @@ export default function CartInvoiceModal({
                       {formatCurrency(total)}
                     </span>
                     <span className="text-xs font-mono text-amber-300 font-bold">
-                      ₹{inrTotal.toLocaleString('en-IN')} INR
+                      {inrTotal === 0 ? '₹0 INR (0 Rupees Default)' : `₹${inrTotal.toLocaleString('en-IN')} INR`}
                     </span>
                   </div>
                 </div>
@@ -484,7 +501,9 @@ export default function CartInvoiceModal({
                     <QrCode size={12} /> Scan & Add to Payee
                   </div>
                   <h4 className="text-xl font-serif italic font-bold text-stone-900">
-                    Scan UPI QR to Settle Invoice Price: ₹{inrTotal.toLocaleString('en-IN')} (${total.toFixed(2)})
+                    {inrTotal === 0 
+                      ? 'Default Invoice Price: ₹0 (0 Rupees)' 
+                      : `Scan UPI QR to Settle Invoice Price: ₹${inrTotal.toLocaleString('en-IN')} ($${total.toFixed(2)})`}
                   </h4>
                   <p className="text-xs text-stone-600">
                     Dynamic QR code linking exact cart price to Payee UPI: <strong className="font-mono text-stone-900">{payee.upiId}</strong>

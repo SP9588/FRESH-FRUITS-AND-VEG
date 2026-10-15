@@ -35,8 +35,10 @@ export default function Cart() {
   }, []);
 
   const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-  const internationalShipping = items.length > 0 ? 15.00 : 0;
+  // Default shopping logistics fixed to 0 Rupees (Free promotional cold-chain delivery)
+  const internationalShipping = 0;
   const total = subtotal + internationalShipping;
+  const inrTotal = Math.round(total * 85.5);
 
   const handleStartCheckout = () => {
     if (!auth.currentUser) {
@@ -85,18 +87,17 @@ export default function Cart() {
 
         {/* Action Badges */}
         <div className="flex items-center gap-2 flex-wrap">
-          {items.length > 0 && (
-            <button
-              onClick={() => setIsInvoiceModalOpen(true)}
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-brand-50 hover:bg-brand-100 border border-brand-200 text-brand-800 rounded-full text-xs font-bold transition-all shadow-sm"
-            >
-              <FileText size={13} className="text-brand-600" />
-              <span>Cart Invoice & Payee QR</span>
-              <span className="text-[10px] bg-brand-200 text-brand-900 px-1.5 py-0.2 rounded font-mono font-bold">
-                ₹{Math.round(total * 85.5).toLocaleString('en-IN')}
-              </span>
-            </button>
-          )}
+          <button
+            onClick={() => setIsInvoiceModalOpen(true)}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-brand-50 hover:bg-brand-100 border border-brand-200 text-brand-800 rounded-full text-xs font-bold transition-all shadow-sm cursor-pointer"
+            title="View invoice with default 0 Rupees"
+          >
+            <FileText size={13} className="text-brand-600" />
+            <span>Cart Invoice & Payee QR</span>
+            <span className="text-[10px] bg-brand-200 text-brand-900 px-2 py-0.5 rounded font-mono font-bold">
+              {inrTotal === 0 ? 'Default: ₹0 (0 Rupees)' : `₹${inrTotal.toLocaleString('en-IN')}`}
+            </span>
+          </button>
 
           <button
             onClick={() => setIsPayeeModalOpen(true)}
@@ -220,10 +221,33 @@ export default function Cart() {
               </div>
 
               {items.length === 0 && (
-                <div className="text-center py-20 bg-stone-50 rounded-[40px] border border-dashed border-stone-200">
-                  <ShoppingBag size={48} className="mx-auto mb-4 text-stone-300" />
-                  <p className="text-stone-500 font-medium">Your shipping bag is currently empty.</p>
-                  <Link to="/market" className="text-brand-600 font-bold mt-4 inline-block hover:underline">Explore Global Marketplace</Link>
+                <div className="text-center py-16 px-6 bg-stone-50 rounded-[40px] border border-dashed border-stone-200 space-y-4">
+                  <ShoppingBag size={48} className="mx-auto text-stone-300" />
+                  <div>
+                    <h3 className="text-xl font-serif italic text-stone-900 mb-1">Your shipping bag is currently empty</h3>
+                    <p className="text-stone-500 text-sm">Default shopping price and invoice are initialized to 0 Rupees (₹0.00 INR).</p>
+                  </div>
+
+                  {/* Default Pricing Highlights */}
+                  <div className="inline-flex items-center gap-3 p-3 bg-white rounded-2xl border border-stone-200 shadow-sm text-xs">
+                    <span className="font-bold text-stone-700">Default Shopping Price:</span>
+                    <span className="font-mono font-black text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded">₹0 (0 Rupees)</span>
+                    <span className="text-stone-300">|</span>
+                    <span className="font-bold text-stone-700">Default Invoice:</span>
+                    <span className="font-mono font-black text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded">₹0 (0 Rupees)</span>
+                  </div>
+
+                  <div className="pt-2 flex flex-wrap justify-center gap-3">
+                    <button
+                      onClick={() => setIsInvoiceModalOpen(true)}
+                      className="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-2 cursor-pointer"
+                    >
+                      <FileText size={14} /> Preview Default Invoice (₹0 Rupees)
+                    </button>
+                    <Link to="/market" className="px-5 py-2.5 bg-stone-900 hover:bg-stone-800 text-white rounded-xl text-xs font-bold transition-all">
+                      Explore Global Marketplace
+                    </Link>
+                  </div>
                 </div>
               )}
 
@@ -245,13 +269,13 @@ export default function Cart() {
                 <div className="space-y-4 mb-8 pb-6 border-b border-white/10 text-sm">
                   <div className="flex justify-between">
                     <span className="text-stone-400 font-serif italic">Produce Subtotal</span>
-                    <span className="font-bold">{formatCurrency(subtotal)}</span>
+                    <span className="font-bold font-mono">{formatCurrency(subtotal)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-stone-400 font-serif italic flex items-center gap-1.5">
                       Cold-Chain Logistics <Truck size={14} className="text-brand-400" />
                     </span>
-                    <span className="font-bold">{formatCurrency(internationalShipping)}</span>
+                    <span className="font-bold font-mono">{formatCurrency(internationalShipping)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-stone-400 font-serif italic">Platform Fee (Inc.)</span>
@@ -262,9 +286,9 @@ export default function Cart() {
                 <div className="flex justify-between items-baseline mb-6">
                   <span className="text-lg font-serif italic text-stone-300">Total Settlement</span>
                   <div className="text-right">
-                    <span className="text-3xl font-black text-brand-400 tracking-tighter block">{formatCurrency(total)}</span>
-                    <span className="text-[11px] text-stone-400 font-mono">
-                      ≈ ₹{Math.round(total * 85.5).toLocaleString('en-IN')} INR
+                    <span className="text-3xl font-black text-brand-400 tracking-tighter block font-mono">{formatCurrency(total)}</span>
+                    <span className="text-[11px] text-amber-300 font-mono font-bold">
+                      {inrTotal === 0 ? '₹0 INR (0 Rupees Default)' : `≈ ₹${inrTotal.toLocaleString('en-IN')} INR`}
                     </span>
                   </div>
                 </div>
@@ -286,19 +310,18 @@ export default function Cart() {
                       <span className="font-mono font-bold text-white">{FRESH_WORLD_PAYEE.upiId}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-stone-400">Merchant:</span>
-                      <span className="text-stone-200">{FRESH_WORLD_PAYEE.merchantName}</span>
-                    </div>
+                    <span className="text-stone-400">Merchant:</span>
+                    <span className="text-stone-200">{FRESH_WORLD_PAYEE.merchantName}</span>
+                  </div>
                   </div>
 
                   {/* Generate & Scan Invoice Button */}
                   <button
                     type="button"
                     onClick={() => setIsInvoiceModalOpen(true)}
-                    disabled={items.length === 0}
-                    className="w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-stone-900 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-50"
+                    className="w-full py-2.5 bg-amber-400 hover:bg-amber-300 text-stone-900 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer"
                   >
-                    <FileText size={14} /> Generate Invoice & Scan Payee QR
+                    <FileText size={14} /> {items.length === 0 ? 'Preview Default Invoice & Payee QR (₹0 Rupees)' : 'Generate Invoice & Scan Payee QR'}
                   </button>
 
                   <button

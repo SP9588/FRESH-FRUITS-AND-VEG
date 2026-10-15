@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Search, Menu, X, Globe, Leaf, Utensils, QrCode, Sparkles, Minimize2, Maximize2 } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, X, Globe, Leaf, Utensils, QrCode, Sparkles, Minimize2, Maximize2, CreditCard, ShieldCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserProfile, FRESH_WORLD_PAYEE } from '../types';
 import { auth, googleProvider } from '../firebase';
@@ -52,6 +52,10 @@ export default function Navbar({ user }: { user: UserProfile | null }) {
             <div className="hidden md:flex items-center gap-5">
               <Link to="/market" className="text-sm font-medium text-stone-600 hover:text-brand-600 transition-colors">
                 {t('nav.marketplace', 'Marketplace')}
+              </Link>
+              <Link to="/pricing" className="text-sm font-semibold text-stone-800 hover:text-brand-600 transition-colors flex items-center gap-1.5 bg-brand-50 hover:bg-brand-100 text-brand-800 px-3 py-1.5 rounded-full border border-brand-200">
+                <CreditCard size={14} className="text-brand-600" />
+                <span>Subscriptions & SaaS</span>
               </Link>
               <Link to="/recipes" className="text-sm font-semibold text-stone-800 hover:text-brand-600 transition-colors flex items-center gap-1.5 bg-stone-100 hover:bg-stone-200/80 px-3 py-1.5 rounded-full">
                 <Utensils size={14} className="text-brand-600" />
@@ -125,6 +129,14 @@ export default function Navbar({ user }: { user: UserProfile | null }) {
                   </button>
                   <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-stone-100 rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all py-2">
                     <Link to="/dashboard" className="block px-4 py-2 text-sm text-stone-600 hover:bg-stone-50">Dashboard</Link>
+                    <Link to="/dashboard/subscriptions" className="block px-4 py-2 text-sm text-stone-700 hover:bg-stone-50 font-bold flex items-center gap-1.5">
+                      <CreditCard size={14} className="text-brand-600" /> My Subscriptions
+                    </Link>
+                    {(user.role === 'admin' || user.email === 'santoshprasad8891@gmail.com') && (
+                      <Link to="/dashboard/admin-subscriptions" className="block px-4 py-2 text-sm text-emerald-800 hover:bg-emerald-50 font-bold flex items-center gap-1.5">
+                        <ShieldCheck size={14} className="text-emerald-600" /> Admin SaaS Suite
+                      </Link>
+                    )}
                     <Link to="/dashboard/crop-doctor" className="block px-4 py-2 text-sm text-stone-600 hover:bg-stone-50 font-bold text-brand-700">Crop Doctor AI</Link>
                     <Link to="/dashboard/orders" className="block px-4 py-2 text-sm text-stone-600 hover:bg-stone-50">Orders</Link>
                     <button 
@@ -163,6 +175,12 @@ export default function Navbar({ user }: { user: UserProfile | null }) {
               className="md:hidden absolute top-20 left-0 w-full bg-white border-b border-stone-100 shadow-xl py-6 px-4 flex flex-col gap-4"
             >
               <Link to="/market" onClick={() => setIsMenuOpen(false)} className="text-lg font-medium">Marketplace</Link>
+              <Link to="/pricing" onClick={() => setIsMenuOpen(false)} className="text-lg font-bold text-brand-700 flex items-center gap-2">
+                <CreditCard size={18} className="text-brand-600" /> Subscriptions & SaaS
+              </Link>
+              <Link to="/dashboard/subscriptions" onClick={() => setIsMenuOpen(false)} className="text-lg font-medium text-stone-700 flex items-center gap-2">
+                My Subscriptions & Validity
+              </Link>
               <Link to="/recipes" onClick={() => setIsMenuOpen(false)} className="text-lg font-medium flex items-center gap-2">
                 <Utensils size={18} className="text-brand-600" /> Seasonal Recipes
               </Link>
